@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pymongo
+pytesseract
+Pillow
+PyMuPDF
+python-multipart
+opencv-python

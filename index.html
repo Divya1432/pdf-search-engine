@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Search Engine</title>
+</head>
+<body>
+
+<h2>📄 PDF Search Engine</h2>
+
+<!-- Upload -->
+<input type="file" id="file">
+<button onclick="upload()">Upload</button>
+
+<br><br>
+
+<!-- Search -->
+<input type="text" id="search" placeholder="Enter keyword">
+<button onclick="search()">Search</button>
+
+<br><br>
+
+<pre id="result"></pre>
+
+<script>
+async function upload() {
+    let file = document.getElementById("file").files[0];
+
+    if (!file) {
+        alert("Select a file");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("file", file);
+
+    let res = await fetch("http://127.0.0.1:8000/upload/", {
+        method: "POST",
+        body: formData
+    });
+
+    let data = await res.json();
+    alert(data.message);
+}
+
+async function search() {
+    let q = document.getElementById("search").value;
+
+    let res = await fetch(`http://127.0.0.1:8000/search/?q=${q}`);
+    let data = await res.json();
+
+    let output = "";
+
+    data.forEach(doc => {
+        output += `📄 File: ${doc.filename}\n`;
+        output += `📅 Year: ${doc.metadata?.year || "N/A"}\n`;
+        output += `📝 Text: ${doc.text.substring(0, 150)}...\n\n`;
+    });
+
+    document.getElementById("result").innerText = output;
+}
+</script>
+
+</body>
+</html>
